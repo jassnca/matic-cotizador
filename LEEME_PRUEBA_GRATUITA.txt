@@ -1,0 +1,45 @@
+MATIC — PRUEBA GRATUITA GITHUB + STREAMLIT COMMUNITY CLOUD
+
+ESTADO: preparado y verificado localmente. Todavía no publicado.
+
+CUENTAS (CREAR EN LOS SITIOS OFICIALES)
+1. https://github.com/signup
+2. https://share.streamlit.io/ (conectar la cuenta GitHub)
+La creación de cuentas, contraseñas, verificación y aceptación de términos
+debe completarla el usuario. No enviar claves ni códigos por el chat.
+
+CONFIGURACIÓN PROPUESTA
+Repositorio de código: matic-cotizador, PRIVADO.
+Rama: main.
+Archivo de entrada: streamlit_app.py.
+Versión Python inicial: 3.12.
+Visibilidad de la app: PRIVADA; autorizar el correo del usuario.
+Las tarifas y la plantilla no deben publicarse en un repositorio público.
+El ZIP se debe descomprimir: subir su contenido, no el ZIP como único archivo.
+
+ACCESO
+Antes de publicar se configura [acceso] en Advanced settings > Secrets.
+Sin configuración válida la app no muestra las cotizaciones.
+No subir secrets.toml al repositorio, aunque sea privado.
+Los secretos se generarán y cargarán después de crear las cuentas.
+
+GUARDADO DURANTE LA PRUEBA
+Community Cloud no garantiza permanencia del almacenamiento local.
+Guardar proyecto crea archivos temporales y una copia de la propuesta.
+Para conservar una cotización, pulsar Descargar proyecto completo para reabrir.
+Se puede importar ese JSON desde otro dispositivo o después de un reinicio.
+La persistencia automática externa se configura en una etapa posterior;
+no se presenta el disco temporal de Community Cloud como una base permanente.
+
+REVISIÓN ANTES DE DAR POR PUBLICADO
+- Acceso HTTPS y app privada.
+- Sin clave/configuración no se muestran datos de proyectos.
+- Verificar reglas de Georreferenciación, Mapeo y Gabinete.
+- Descargar propuesta XLSM y respaldo JSON.
+- Reabrir JSON desde el teléfono.
+- Confirmar acceso con datos móviles y PC local apagada.
+
+Fuentes oficiales:
+https://docs.streamlit.io/deploy/streamlit-community-cloud
+https://docs.streamlit.io/deploy/streamlit-community-cloud/share-your-app
+https://docs.streamlit.io/develop/concepts/connections/connecting-to-data

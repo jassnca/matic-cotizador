@@ -1,0 +1,7 @@
+.streamlit/secrets.toml
+**/acceso_local.json
+**/CLAVE_*
+**/proyectos_guardados/
+**/__pycache__/
+*.log
+.env
