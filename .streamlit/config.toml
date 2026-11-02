@@ -1,0 +1,7 @@
+[theme]
+base = "dark"
+primaryColor = "#00a6a6"
+[browser]
+gatherUsageStats = false
+[server]
+enableStaticServing = false
