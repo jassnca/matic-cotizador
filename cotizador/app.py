@@ -28,6 +28,13 @@ def load_data(data):
     st.session_state['costos_guardados']=data['catalog']
     for key in list(st.session_state):
         if key.startswith(('w_','ed_')): del st.session_state[key]
+    # Rehidratar también los widgets: borrar sus claves no siempre restablece
+    # el valor que mantiene el navegador en las versiones nuevas de Streamlit.
+    for key,value in cfg.items():
+        widget='w_'+key
+        if key in ['geo','topo']: widget+=f'_{cfg["tipo"]}_{cfg["metrado"]}'
+        if key in ['dias_vehiculo','dias_planilla']: widget+=f'_{cfg.get("duracion",0)}'
+        st.session_state[widget]=value
     st.session_state['rev']=st.session_state.get('rev',0)+1
     st.session_state.pop('plan_signature',None)
     st.session_state.pop('modal_done',None)
@@ -125,14 +132,16 @@ def main():
         value=cfg.get(k,default)
         widget='w_'+k+(f'_{cfg["tipo"]}_{cfg["metrado"]}' if k in ['geo','topo'] else '')
         if k in ['dias_vehiculo','dias_planilla']: widget+=f'_{cfg.get("duracion",0)}'
-        if decimal: result=st.number_input(label,min_value=float(minimum),value=float(value),format='%g',step=0.1,key=widget)
-        else: result=st.number_input(label,min_value=int(minimum),value=int(math.ceil(value)),format='%d',step=1,key=widget)
+        initial={} if widget in st.session_state else {'value':float(value) if decimal else int(math.ceil(value))}
+        if decimal: result=st.number_input(label,min_value=float(minimum),format='%g',step=0.1,key=widget,**initial)
+        else: result=st.number_input(label,min_value=int(minimum),format='%d',step=1,key=widget,**initial)
         cfg[k]=result; return result
     def text(k,label,default=''):
-        cfg[k]=st.text_input(label,value=cfg.get(k,default),key='w_'+k); return cfg[k]
+        initial={} if 'w_'+k in st.session_state else {'value':cfg.get(k,default)}
+        cfg[k]=st.text_input(label,key='w_'+k,**initial); return cfg[k]
     def select(k,label,opts,default=None):
         val=cfg.get(k,default if default is not None else opts[0]); val=val if val in opts else opts[0]
-        cfg[k]=st.selectbox(label,opts,index=opts.index(val),key='w_'+k); return cfg[k]
+        cfg[k]=st.selectbox(label,opts,index=None if 'w_'+k in st.session_state else opts.index(val),key='w_'+k); return cfg[k]
     def reset_widget(k): st.session_state.pop('w_'+k,None)
     def edit(name,default,config):
         tab.setdefault(name,[])
@@ -179,7 +188,7 @@ def main():
             if cfg['tipo']=='AREA': number('recorrido','Recorrido equivalente km',0,0,True)
         with st.expander('Datos de la propuesta y entregables'):
             for k,label in [('codigo','Código cotización'),('cliente','Cliente'),('servicio','Servicio'),('ruc','RUC cliente'),('direccion','Dirección cliente'),('atencion','Atención'),('email','E-mail cliente')]: text(k,label)
-            cfg['alcance']=st.text_area('Entregables y metodología',value=cfg.get('alcance',''),key='w_alcance')
+            cfg['alcance']=st.text_area('Entregables y metodología',key='w_alcance',**({} if 'w_alcance' in st.session_state else {'value':cfg.get('alcance','')}))
     km=cfg['metrado'] if cfg['tipo']=='LINEAL' else cfg.get('recorrido',0)
     incomplete=cfg['tipo']=='AREA' and km<=0
     if incomplete: st.warning('Falta recorrido equivalente en km: los rendimientos de captura y gabinete fueron definidos en km. Guarda un borrador y completa ese dato para exportar.')
@@ -273,7 +282,7 @@ def main():
         with col[1]: number('induccion','Jornadas inducción',0)
         with col[2]: select('actividad_riesgos','Asignar riesgos',ACTIVIDADES)
         edit('otros_riesgos',{'Actividad':ACTIVIDADES[0],'Riesgo':'Otro riesgo','Porcentaje':0},{'Actividad':ac,'Porcentaje':st.column_config.NumberColumn(min_value=0,max_value=100,format='%g')})
-        cfg['notas']=st.text_area('Otras consideraciones',value=cfg.get('notas',''),key='w_notas')
+        cfg['notas']=st.text_area('Otras consideraciones',key='w_notas',**({} if 'w_notas' in st.session_state else {'value':cfg.get('notas','')}))
     for name,records in tab.items():
         for r in records:
             for k,v in r.items():
